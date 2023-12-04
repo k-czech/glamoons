@@ -22,10 +22,17 @@ const main = async () => {
     where: { email: "admin@example.com" },
     update: {},
     create: {
-      email: "admin@example.com",
+      email: "admin@glamoons.com",
       password: (await hashPassword("!example123")).hash,
       companyName: "Glamoons",
       type: { connect: { id: 1 } },
+      firstname: "Admin",
+      lastname: "Admin",
+      addressLine: "Adminowska 31",
+      city: "Wrocław",
+      phone: "555888999",
+      postalCode: "33-333",
+      country: "PL",
     },
   });
 };
