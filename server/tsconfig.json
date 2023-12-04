@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "rootDirs": ["src"],
+    "composite": true,
+    "target": "ES2022",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "types": ["node"],
+    "baseUrl": "."
+  }
+}
