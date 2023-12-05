@@ -1,17 +1,16 @@
-import "reflect-metadata";
-import { ObjectType, Field, ID } from "type-graphql";
 import {
   IsEmail,
   IsPostalCode,
   Matches,
   MaxLength,
-  MIN_LENGTH,
   MinLength,
 } from "class-validator";
+import "reflect-metadata";
+import { Field, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class User {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field()
