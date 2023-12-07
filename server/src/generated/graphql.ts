@@ -20,6 +20,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
+  loginUser: UserLoginResponse;
 };
 
 
@@ -27,21 +28,20 @@ export type MutationCreateUserArgs = {
   createUserInput: UserCreateInput;
 };
 
+
+export type MutationLoginUserArgs = {
+  userLoginInput: UserLoginInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   allUsers: Array<User>;
   getUserByEmail: Array<User>;
-  loginUser: UserLoginResponse;
 };
 
 
 export type QueryGetUserByEmailArgs = {
   email: Scalars['String']['input'];
-};
-
-
-export type QueryLoginUserArgs = {
-  userLoginInput: UserLoginInput;
 };
 
 export type User = {
@@ -186,12 +186,12 @@ export interface DateTimeIsoScalarConfig extends GraphQLScalarTypeConfig<Resolve
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'createUserInput'>>;
+  loginUser?: Resolver<ResolversTypes['UserLoginResponse'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'userLoginInput'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allUsers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   getUserByEmail?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserByEmailArgs, 'email'>>;
-  loginUser?: Resolver<ResolversTypes['UserLoginResponse'], ParentType, ContextType, RequireFields<QueryLoginUserArgs, 'userLoginInput'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

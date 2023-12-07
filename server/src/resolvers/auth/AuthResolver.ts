@@ -55,7 +55,7 @@ class UserLoginInput {
 
 @Resolver(User)
 export class AuthResolver {
-  @Query(() => UserLoginResponse)
+  @Mutation(() => UserLoginResponse)
   async loginUser(
     @Arg("userLoginInput") userLoginInput: UserLoginInput,
     @Ctx() ctx: Context
