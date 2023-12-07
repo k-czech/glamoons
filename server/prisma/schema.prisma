@@ -18,12 +18,12 @@ model User {
   userTypeId  Int
   firstname   String
   lastname    String
-  addressLine String
+  addressLine String?
   homeNumber  String?
-  postalCode  String
-  city        String
-  country     String
-  phone       String    @unique
+  postalCode  String?
+  city        String?
+  country     String?
+  phone       String?    @unique
   companyName String?
   vatNumber   String?
   isActive    Boolean?  @default(true)

@@ -2,11 +2,12 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import * as tq from "type-graphql";
 import { Context, context } from "./context";
-import { UserResolver } from "./resolvers/UserResolver";
+import { UserResolver } from "./resolvers/user/UserResolver";
+import { AuthResolver } from "./resolvers/auth/AuthResolver";
 
 const app = async () => {
   const schema = await tq.buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, AuthResolver],
     scalarsMap: [],
     validate: { forbidUnknownValues: false },
   });

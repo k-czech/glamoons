@@ -74,3 +74,18 @@ export class User {
   @Field(() => Date)
   updatedDate?: Date;
 }
+
+@ObjectType()
+export class UserLoginResponse {
+  @Field(() => String)
+  email: User["email"];
+
+  @Field(() => String)
+  firstname: User["firstname"];
+
+  @Field(() => String)
+  lastname: User["lastname"];
+
+  @Field(() => String)
+  token: string;
+}

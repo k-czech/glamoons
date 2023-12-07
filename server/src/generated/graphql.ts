@@ -6,6 +6,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -16,9 +17,31 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser: User;
+};
+
+
+export type MutationCreateUserArgs = {
+  createUserInput: UserCreateInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   allUsers: Array<User>;
+  getUserByEmail: Array<User>;
+  loginUser: UserLoginResponse;
+};
+
+
+export type QueryGetUserByEmailArgs = {
+  email: Scalars['String']['input'];
+};
+
+
+export type QueryLoginUserArgs = {
+  userLoginInput: UserLoginInput;
 };
 
 export type User = {
@@ -38,6 +61,26 @@ export type User = {
   postalCode: Scalars['String']['output'];
   updatedDate: Scalars['DateTimeISO']['output'];
   vatNumber?: Maybe<Scalars['String']['output']>;
+};
+
+export type UserCreateInput = {
+  email: Scalars['String']['input'];
+  firstname: Scalars['String']['input'];
+  lastname: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type UserLoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type UserLoginResponse = {
+  __typename?: 'UserLoginResponse';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  lastname: Scalars['String']['output'];
+  token: Scalars['String']['output'];
 };
 
 
@@ -114,9 +157,13 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DateTimeISO: ResolverTypeWrapper<Scalars['DateTimeISO']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   User: ResolverTypeWrapper<User>;
+  UserCreateInput: UserCreateInput;
+  UserLoginInput: UserLoginInput;
+  UserLoginResponse: ResolverTypeWrapper<UserLoginResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -124,17 +171,27 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   DateTimeISO: Scalars['DateTimeISO']['output'];
   Int: Scalars['Int']['output'];
+  Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
   User: User;
+  UserCreateInput: UserCreateInput;
+  UserLoginInput: UserLoginInput;
+  UserLoginResponse: UserLoginResponse;
 };
 
 export interface DateTimeIsoScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTimeISO'], any> {
   name: 'DateTimeISO';
 }
 
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'createUserInput'>>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allUsers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  getUserByEmail?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserByEmailArgs, 'email'>>;
+  loginUser?: Resolver<ResolversTypes['UserLoginResponse'], ParentType, ContextType, RequireFields<QueryLoginUserArgs, 'userLoginInput'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -156,9 +213,19 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserLoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLoginResponse'] = ResolversParentTypes['UserLoginResponse']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   DateTimeISO?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserLoginResponse?: UserLoginResponseResolvers<ContextType>;
 };
 
