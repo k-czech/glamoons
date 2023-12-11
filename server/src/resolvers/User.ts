@@ -1,12 +1,13 @@
 import {
   IsEmail,
+  IsPhoneNumber,
   IsPostalCode,
   Matches,
   MaxLength,
   MinLength,
 } from "class-validator";
 import "reflect-metadata";
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class User {
@@ -34,7 +35,6 @@ export class User {
   homeNumber?: string | null;
 
   @Field(() => String)
-  @IsPostalCode()
   @Matches(/^\d{2}-\d{3}$/, {
     message: "Postal code is not valid",
   })
@@ -51,7 +51,7 @@ export class User {
   country: string;
 
   @Field(() => String)
-  @Matches(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/, {
+  @IsPhoneNumber("PL", {
     message: "Invalid phone number",
   })
   phone: string;
@@ -88,4 +88,57 @@ export class UserLoginResponse {
 
   @Field(() => String)
   token: string;
+}
+
+@InputType()
+export class UserUpdateInput {
+  @Field(() => Int)
+  id: User["id"];
+
+  @Field(() => String, { nullable: true })
+  firstname?: User["firstname"];
+
+  @Field(() => String, { nullable: true })
+  lastname?: User["lastname"];
+
+  @Field(() => String)
+  @MinLength(4, {
+    message: "Address must be at least 4 characters long",
+  })
+  @MaxLength(50)
+  addressLine: User["addressLine"];
+
+  @Field(() => String, { nullable: true })
+  homeNumber?: User["homeNumber"];
+
+  @Field(() => String)
+  @Matches(/^\d{2}-\d{3}$/, {
+    message: "Postal code is not valid",
+  })
+  postalCode: User["postalCode"];
+
+  @Field(() => String)
+  @MinLength(4, {
+    message: "City must be at least 4 characters long",
+  })
+  @MaxLength(50)
+  city: User["city"];
+
+  @Field(() => String)
+  country: User["country"];
+
+  @Field(() => String)
+  @IsPhoneNumber("PL", {
+    message: "Invalid phone number",
+  })
+  phone: User["phone"];
+
+  @Field(() => String, { nullable: true })
+  @MinLength(4, {
+    message: "Company name must be at least 4 characters long",
+  })
+  companyName?: User["companyName"];
+
+  @Field(() => String, { nullable: true })
+  vatNumber?: User["vatNumber"];
 }
