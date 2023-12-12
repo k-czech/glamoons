@@ -5,45 +5,7 @@ import "reflect-metadata";
 import { Arg, Ctx, Field, InputType, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { hashPassword, verifyPassword } from "../../utils/hash";
-import { User } from "../User";
-
-@InputType()
-class UserCreateInput {
-  @Field(() => String)
-  firstname: User["firstname"];
-
-  @Field(() => String)
-  lastname: User["lastname"];
-
-  @Field(() => String)
-  email: User["email"];
-
-  @Field(() => String!)
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
-    message:
-      "Password must contain at least one letter, one number and one special character",
-  })
-  @MinLength(6, {
-    message: "Password must be at least 6 characters long",
-  })
-  password: string;
-}
-
-@InputType()
-class UserLoginInput {
-  @Field(() => String)
-  email: User["email"];
-
-  @Field(() => String!)
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
-    message:
-      "Password must contain at least one letter, one number and one special character",
-  })
-  @MinLength(6, {
-    message: "Password must be at least 6 characters long",
-  })
-  password: string;
-}
+import { User, UserCreateInput, UserLoginInput } from "../User";
 
 @Resolver(User)
 export class AuthResolver {

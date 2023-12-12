@@ -1,4 +1,4 @@
-import { IsEmail, IsPhoneNumber } from "class-validator";
+import { IsEmail, IsPhoneNumber, Matches, MinLength } from "class-validator";
 import "reflect-metadata";
 import { Field, InputType, ObjectType } from "type-graphql";
 
@@ -31,6 +31,44 @@ export class User {
 
   @Field(() => Date)
   updated_date?: Date;
+}
+
+@InputType()
+export class UserCreateInput {
+  @Field(() => String)
+  firstname: User["firstname"];
+
+  @Field(() => String)
+  lastname: User["lastname"];
+
+  @Field(() => String)
+  email: User["email"];
+
+  @Field(() => String!)
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
+    message:
+      "Password must contain at least one letter, one number and one special character",
+  })
+  @MinLength(6, {
+    message: "Password must be at least 6 characters long",
+  })
+  password: string;
+}
+
+@InputType()
+export class UserLoginInput {
+  @Field(() => String)
+  email: User["email"];
+
+  @Field(() => String!)
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
+    message:
+      "Password must contain at least one letter, one number and one special character",
+  })
+  @MinLength(6, {
+    message: "Password must be at least 6 characters long",
+  })
+  password: string;
 }
 
 @InputType()
