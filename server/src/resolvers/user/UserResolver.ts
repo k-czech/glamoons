@@ -1,19 +1,24 @@
 import { GraphQLError } from "graphql";
 import "reflect-metadata";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { User, UserUpdateInput } from "../User";
-import { verifyToken } from "../../utils/verifyToken";
-import { IncomingMessage } from "http";
 
 @Resolver(User)
 export class UserResolver {
-  @Query(() => [User])
+  constructor() {}
+  @Query(() => [User], {
+    name: "allUsers",
+    description: "Get all users from the system",
+  })
   async allUsers(@Ctx() ctx: Context) {
     return ctx.prisma.user.findMany();
   }
 
-  @Query(() => User)
+  @Query(() => User, {
+    name: "getUserByEmail",
+    description: "Get user by email",
+  })
   async getUserByEmail(@Arg("email") email: string, @Ctx() ctx: Context) {
     const user = await ctx.prisma.user.findUnique({ where: { email } });
 
@@ -32,7 +37,11 @@ export class UserResolver {
     return user;
   }
 
-  @Mutation(() => User)
+  @Authorized()
+  @Mutation(() => User, {
+    name: "updateUser",
+    description: "Update user by specific id",
+  })
   async updateUser(
     @Arg("userUpdateInput") userUpdateInput: UserUpdateInput,
     @Ctx() ctx: Context

@@ -5,7 +5,7 @@ import "reflect-metadata";
 import { Arg, Ctx, Field, InputType, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { hashPassword, verifyPassword } from "../../utils/hash";
-import { User, UserLoginResponse } from "../User";
+import { User } from "../User";
 
 @InputType()
 class UserCreateInput {
@@ -47,7 +47,11 @@ class UserLoginInput {
 
 @Resolver(User)
 export class AuthResolver {
-  @Mutation(() => UserLoginResponse)
+  constructor() {}
+  @Mutation(() => User, {
+    name: "loginUser",
+    description: "Login user",
+  })
   async loginUser(
     @Arg("userLoginInput") userLoginInput: UserLoginInput,
     @Ctx() ctx: Context
@@ -67,7 +71,7 @@ export class AuthResolver {
       });
     }
 
-    const { email, firstname, lastname, password, userTypeId } = userDB;
+    const { email, firstname, lastname, password, user_type_id, id } = userDB;
     const isPasswordValid = verifyPassword({
       password: userLoginInput.password,
       hash: password,
@@ -84,15 +88,15 @@ export class AuthResolver {
 
     const token = jwt.sign(
       {
+        userId: id,
         email,
         firstname,
         lastname,
-        userTypeId,
+        user_type_id,
       },
       process.env.JWT_SECRET as Secret,
       {
         expiresIn: "1h",
-        algorithm: "HS256",
       }
     );
     return {
@@ -101,7 +105,10 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => User)
+  @Mutation(() => User, {
+    name: "createUser",
+    description: "Create a new user",
+  })
   async createUser(
     @Arg("createUserInput") createUserInput: UserCreateInput,
     @Ctx() ctx: Context
