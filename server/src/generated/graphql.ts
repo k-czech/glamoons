@@ -20,7 +20,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   /** Create a new user */
-  createUser: UserCreateResponse;
+  createUser: User;
   /** Login user */
   loginUser: UserLoginResponse;
   /** Update user by specific id */
@@ -57,14 +57,14 @@ export type QueryGetUserByEmailArgs = {
 
 export type User = {
   __typename?: 'User';
-  createdDate: Scalars['DateTimeISO']['output'];
+  created_date: Scalars['DateTimeISO']['output'];
   email: Scalars['String']['output'];
   firstname: Scalars['String']['output'];
   id: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
+  is_active: Scalars['Boolean']['output'];
   lastname: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
-  updatedDate: Scalars['DateTimeISO']['output'];
+  updated_date: Scalars['DateTimeISO']['output'];
 };
 
 export type UserCreateInput = {
@@ -74,16 +74,6 @@ export type UserCreateInput = {
   password: Scalars['String']['input'];
 };
 
-export type UserCreateResponse = {
-  __typename?: 'UserCreateResponse';
-  email: Scalars['String']['output'];
-  firstname: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
-  lastname: Scalars['String']['output'];
-  password: Scalars['String']['output'];
-};
-
 export type UserLoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -91,17 +81,16 @@ export type UserLoginInput = {
 
 export type UserLoginResponse = {
   __typename?: 'UserLoginResponse';
-  email: Scalars['String']['output'];
-  firstname: Scalars['String']['output'];
-  lastname: Scalars['String']['output'];
   token: Scalars['String']['output'];
 };
 
 export type UserUpdateInput = {
+  currentPassword?: InputMaybe<Scalars['String']['input']>;
   firstname?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   lastname?: InputMaybe<Scalars['String']['input']>;
-  phone: Scalars['String']['input'];
+  password?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -182,7 +171,6 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   User: ResolverTypeWrapper<User>;
   UserCreateInput: UserCreateInput;
-  UserCreateResponse: ResolverTypeWrapper<UserCreateResponse>;
   UserLoginInput: UserLoginInput;
   UserLoginResponse: ResolverTypeWrapper<UserLoginResponse>;
   UserUpdateInput: UserUpdateInput;
@@ -197,7 +185,6 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   User: User;
   UserCreateInput: UserCreateInput;
-  UserCreateResponse: UserCreateResponse;
   UserLoginInput: UserLoginInput;
   UserLoginResponse: UserLoginResponse;
   UserUpdateInput: UserUpdateInput;
@@ -208,7 +195,7 @@ export interface DateTimeIsoScalarConfig extends GraphQLScalarTypeConfig<Resolve
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<ResolversTypes['UserCreateResponse'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'createUserInput'>>;
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'createUserInput'>>;
   loginUser?: Resolver<ResolversTypes['UserLoginResponse'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'userLoginInput'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'userUpdateInput'>>;
 };
@@ -219,31 +206,18 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  createdDate?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
+  created_date?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  is_active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   lastname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  updatedDate?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type UserCreateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserCreateResponse'] = ResolversParentTypes['UserCreateResponse']> = {
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  lastname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updated_date?: Resolver<ResolversTypes['DateTimeISO'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserLoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLoginResponse'] = ResolversParentTypes['UserLoginResponse']> = {
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  lastname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -253,7 +227,6 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
-  UserCreateResponse?: UserCreateResponseResolvers<ContextType>;
   UserLoginResponse?: UserLoginResponseResolvers<ContextType>;
 };
 

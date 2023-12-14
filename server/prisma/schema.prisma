@@ -19,8 +19,6 @@ model user {
   firstname    String
   lastname     String
   phone        String?        @unique
-  user_address user_address[]
-  company      company[]
   is_active    Boolean        @default(true)
   created_date DateTime       @default(now())
   updated_date DateTime       @updatedAt
@@ -30,37 +28,4 @@ model user_type {
   id   Int    @id @default(autoincrement())
   name String
   user user[]
-}
-
-model address {
-  id            String         @id @default(uuid())
-  street_number Int
-  address_line  String
-  city          String
-  postal_code   String
-  country       country        @relation(fields: [country_id], references: [id])
-  country_id    String
-  user_address  user_address[]
-}
-
-model country {
-  id           String    @id @default(uuid())
-  country_name String
-  address      address[]
-}
-
-model user_address {
-  user       user    @relation(fields: [user_id], references: [id])
-  user_id    String
-  address    address @relation(fields: [address_id], references: [id])
-  address_id String  @id
-  is_default Boolean @default(false)
-}
-
-model company {
-  id           String @id @default(uuid())
-  user         user   @relation(fields: [user_id], references: [id])
-  user_id      String
-  company_name String
-  vat_number   String
 }

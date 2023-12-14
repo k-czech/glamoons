@@ -1,10 +1,10 @@
 import { IsEmail, IsPhoneNumber, Matches, MinLength } from "class-validator";
 import "reflect-metadata";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, ID, InputType, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class User {
-  @Field(() => String)
+  @Field(() => ID)
   id: string;
 
   @Field()
@@ -33,15 +33,21 @@ export class User {
   updated_date?: Date;
 }
 
+@ObjectType()
+export class UserLoginResponse {
+  @Field(() => String)
+  token: string;
+}
+
 @InputType()
 export class UserCreateInput {
-  @Field(() => String)
+  @Field(() => String!)
   firstname: User["firstname"];
 
-  @Field(() => String)
+  @Field(() => String!)
   lastname: User["lastname"];
 
-  @Field(() => String)
+  @Field(() => String!)
   email: User["email"];
 
   @Field(() => String!)
@@ -57,7 +63,7 @@ export class UserCreateInput {
 
 @InputType()
 export class UserLoginInput {
-  @Field(() => String)
+  @Field(() => String!)
   email: User["email"];
 
   @Field(() => String!)
@@ -73,7 +79,7 @@ export class UserLoginInput {
 
 @InputType()
 export class UserUpdateInput {
-  @Field(() => String)
+  @Field(() => ID)
   id: User["id"];
 
   @Field(() => String, { nullable: true })
@@ -82,13 +88,29 @@ export class UserUpdateInput {
   @Field(() => String, { nullable: true })
   lastname: User["lastname"];
 
-  @Field(() => String)
-  @IsEmail()
-  email: User["email"];
-
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsPhoneNumber("PL", {
     message: "Invalid phone number",
   })
   phone: User["phone"];
+
+  @Field(() => String, { nullable: true })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
+    message:
+      "Password must contain at least one letter, one number and one special character",
+  })
+  @MinLength(6, {
+    message: "Password must be at least 6 characters long",
+  })
+  currentPassword?: string;
+
+  @Field(() => String, { nullable: true })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/, {
+    message:
+      "Password must contain at least one letter, one number and one special character",
+  })
+  @MinLength(6, {
+    message: "Password must be at least 6 characters long",
+  })
+  password?: string;
 }

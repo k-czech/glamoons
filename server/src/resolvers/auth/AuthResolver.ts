@@ -1,16 +1,20 @@
-import { Matches, MinLength } from "class-validator";
 import { GraphQLError } from "graphql";
 import jwt, { Secret } from "jsonwebtoken";
 import "reflect-metadata";
-import { Arg, Ctx, Field, InputType, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { hashPassword, verifyPassword } from "../../utils/hash";
-import { User, UserCreateInput, UserLoginInput } from "../User";
+import {
+  User,
+  UserCreateInput,
+  UserLoginInput,
+  UserLoginResponse,
+} from "../User";
 
 @Resolver(User)
 export class AuthResolver {
   constructor() {}
-  @Mutation(() => User, {
+  @Mutation(() => UserLoginResponse, {
     name: "loginUser",
     description: "Login user",
   })
@@ -59,6 +63,7 @@ export class AuthResolver {
       process.env.JWT_SECRET as Secret,
       {
         expiresIn: "1h",
+        algorithm: "HS256",
       }
     );
     return {
