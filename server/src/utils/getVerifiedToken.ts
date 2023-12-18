@@ -5,7 +5,7 @@ type Token = {
   userId: string;
 };
 
-export const getUser = (context: Context) => {
+export const getVerifiedToken = (context: Context) => {
   const authHeader = context.req.headers["authorization"] || "";
 
   const token = authHeader.replace("Bearer ", "");

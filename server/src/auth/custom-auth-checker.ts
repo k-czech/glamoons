@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { type Context } from "../context";
-import { getUser } from "../utils/getUser";
+import { getVerifiedToken } from "../utils/getVerifiedToken";
 import { AuthCheckerInterface, ResolverData } from "type-graphql";
 
 export class CustomAuthChecker implements AuthCheckerInterface<Context> {
@@ -8,7 +8,7 @@ export class CustomAuthChecker implements AuthCheckerInterface<Context> {
     resolverData: ResolverData<Context>,
     _roles: string[]
   ): boolean | Promise<boolean> {
-    const userId = getUser(resolverData.context);
+    const userId = getVerifiedToken(resolverData.context);
     const user = resolverData.context.prisma.user.findUnique({
       where: {
         id: userId,
