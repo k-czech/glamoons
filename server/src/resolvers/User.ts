@@ -1,5 +1,4 @@
 import { IsEmail, IsPhoneNumber, Matches, MinLength } from "class-validator";
-import "reflect-metadata";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 
 @ObjectType()

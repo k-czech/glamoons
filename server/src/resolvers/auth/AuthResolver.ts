@@ -1,6 +1,5 @@
 import { GraphQLError } from "graphql";
 import jwt, { Secret } from "jsonwebtoken";
-import "reflect-metadata";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { getUserFromDB } from "../../utils/getUserFromDB";
@@ -24,10 +23,39 @@ export class AuthResolver {
     @Ctx() ctx: Context
   ) {
     const { userDB } = await getUserFromDB(ctx, userLoginInput);
-    const token = jwt.sign({}, process.env.JWT_SECRET as Secret, {
-      expiresIn: "1h",
-      algorithm: "HS256",
+
+    const refreshToken = jwt.sign(
+      { userId: userDB.id },
+      process.env.JWT_SECRET_REFRESH as Secret,
+      {
+        expiresIn: "1d",
+        algorithm: "HS256",
+      }
+    );
+
+    const token = jwt.sign(
+      { userId: userDB.id },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: "1h",
+        algorithm: "HS256",
+      }
+    );
+
+    ctx.res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
+
+    ctx.res.cookie("accessToken", token, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 8600,
+    });
+
     return {
       ...userDB,
       token,

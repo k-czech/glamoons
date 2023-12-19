@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import "reflect-metadata";
+import jwt, { Secret, verify } from "jsonwebtoken";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { hashPassword, verifyPassword } from "../../utils/hash";
