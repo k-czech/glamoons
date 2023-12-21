@@ -4,11 +4,11 @@ import { getVerifiedToken } from "../utils/getVerifiedToken";
 import { AuthCheckerInterface, ResolverData } from "type-graphql";
 
 export class CustomAuthChecker implements AuthCheckerInterface<Context> {
-  check(
+  async check(
     resolverData: ResolverData<Context>,
     _roles: string[]
-  ): boolean | Promise<boolean> {
-    const userId = getVerifiedToken(resolverData.context);
+  ): Promise<boolean> {
+    const userId = await getVerifiedToken(resolverData.context);
     const user = resolverData.context.prisma.user.findUnique({
       where: {
         id: userId,

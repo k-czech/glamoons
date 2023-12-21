@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient;
-  req: IncomingMessage;
+  req: any;
   res: any;
 }
 

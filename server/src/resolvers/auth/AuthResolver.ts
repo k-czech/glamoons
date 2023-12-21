@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import jwt, { Secret } from "jsonwebtoken";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
+import { createTokens } from "../../utils/createTokens";
 import { getUserFromDB } from "../../utils/getUserFromDB";
 import { hashPassword } from "../../utils/hash";
 import {
@@ -24,41 +24,20 @@ export class AuthResolver {
   ) {
     const { userDB } = await getUserFromDB(ctx, userLoginInput);
 
-    const refreshToken = jwt.sign(
-      { userId: userDB.id },
-      process.env.JWT_SECRET_REFRESH as Secret,
-      {
-        expiresIn: "1d",
-        algorithm: "HS256",
-      }
+    const { accessToken, refreshToken } = createTokens(userDB as User);
+
+    const tokenExpireDate = new Date();
+    tokenExpireDate.setDate(tokenExpireDate.getDate() + 60 * 60 * 24 * 1);
+
+    ctx.req.headers.authorization = `Bearer ${accessToken}`;
+    ctx.res?.http?.headers.append(
+      "set-cookie",
+      `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
     );
-
-    const token = jwt.sign(
-      { userId: userDB.id },
-      process.env.JWT_SECRET as Secret,
-      {
-        expiresIn: "1h",
-        algorithm: "HS256",
-      }
-    );
-
-    ctx.res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-
-    ctx.res.cookie("accessToken", token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      maxAge: 8600,
-    });
 
     return {
       ...userDB,
-      token,
+      token: accessToken,
     };
   }
 
