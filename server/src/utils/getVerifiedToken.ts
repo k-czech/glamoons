@@ -10,7 +10,6 @@ type Token = {
 
 export const getVerifiedToken = async (context: Context) => {
   const accessToken = context.req.headers.authorization;
-  const refreshToken = context.req.headers["set-cookie"];
 
   if (!accessToken) {
     throw new GraphQLError("User is not authenticated", {
@@ -57,10 +56,6 @@ export const getVerifiedToken = async (context: Context) => {
   tokenExpireDate.setDate(tokenExpireDate.getDate() + 60 * 60 * 24 * 1);
 
   context.req.headers.authorization = `Bearer ${tokens.accessToken}`;
-  context.res?.http?.headers.append(
-    "set-cookie",
-    `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
-  );
   context.req.userId = user.id;
 
   return data.userId;

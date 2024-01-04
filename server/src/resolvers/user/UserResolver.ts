@@ -8,6 +8,8 @@ import { User, UserUpdateInput } from "../User";
 @Resolver(User)
 export class UserResolver {
   constructor() {}
+
+  @Authorized()
   @Query(() => [User], {
     name: "allUsers",
     description: "Get all users from the system",

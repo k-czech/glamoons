@@ -36,6 +36,9 @@ export class User {
 export class UserLoginResponse {
   @Field(() => String)
   token: string;
+
+  @Field(() => String)
+  refreshToken: string;
 }
 
 @InputType()

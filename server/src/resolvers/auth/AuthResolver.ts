@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Secret, verify } from "jsonwebtoken";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { Context } from "../../context";
 import { createTokens } from "../../utils/createTokens";
@@ -26,18 +27,12 @@ export class AuthResolver {
 
     const { accessToken, refreshToken } = createTokens(userDB as User);
 
-    const tokenExpireDate = new Date();
-    tokenExpireDate.setDate(tokenExpireDate.getDate() + 60 * 60 * 24 * 1);
-
     ctx.req.headers.authorization = `Bearer ${accessToken}`;
-    ctx.res?.http?.headers.append(
-      "set-cookie",
-      `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
-    );
 
     return {
       ...userDB,
       token: accessToken,
+      refreshToken,
     };
   }
 
@@ -83,5 +78,42 @@ export class AuthResolver {
     });
 
     return user;
+  }
+
+  @Mutation(() => UserLoginResponse, {
+    name: "generateNewAccessToken",
+    description: "Generate new access token",
+  })
+  async generateNewAccessToken(@Ctx() ctx: Context) {
+    const jwtRefreshToken = ctx.req.headers.authorization;
+
+    if (!jwtRefreshToken) {
+      throw new GraphQLError("User is not authenticated", {
+        extensions: {
+          code: "UNAUTHENTICATED",
+          http: { status: 401 },
+        },
+      });
+    }
+    const token = jwtRefreshToken.replace("Bearer ", "");
+    const data = verify(token, process.env.JWT_SECRET_REFRESH as Secret) as {
+      userId: string;
+    };
+
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: data.userId,
+      },
+    });
+
+    const { accessToken, refreshToken } = createTokens(user as User);
+
+    ctx.req.headers.authorization = `Bearer ${refreshToken}`;
+
+    return {
+      ...user,
+      token: accessToken,
+      refreshToken,
+    };
   }
 }
