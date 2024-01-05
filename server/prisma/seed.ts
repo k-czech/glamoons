@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../src/utils/hash";
 const prisma = new PrismaClient();
 const main = async () => {
-  await prisma.userType.upsert({
+  await prisma.user_type.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -10,7 +10,7 @@ const main = async () => {
       name: "ADMIN",
     },
   });
-  await prisma.userType.upsert({
+  await prisma.user_type.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -23,16 +23,10 @@ const main = async () => {
     update: {},
     create: {
       email: "admin@glamoons.com",
-      password: (await hashPassword("!example123")).hash,
-      companyName: "Glamoons",
+      password: (await hashPassword("test123!")).hash,
       type: { connect: { id: 1 } },
-      firstname: "Admin",
-      lastname: "Admin",
-      addressLine: "Adminowska 31",
-      city: "Wrocław",
-      phone: "555888999",
-      postalCode: "33-333",
-      country: "PL",
+      firstname: "Kamil",
+      lastname: "Czech",
     },
   });
 };

@@ -10,29 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  password    String
-  type        UserType  @relation(fields: [userTypeId], references: [id])
-  userTypeId  Int
-  firstname   String
-  lastname    String
-  addressLine String
-  homeNumber  String?
-  postalCode  String
-  city        String
-  country     String
-  phone       String    @unique
-  companyName String?
-  vatNumber   String?
-  isActive    Boolean?  @default(true)
-  createdDate DateTime? @default(now())
-  updatedDate DateTime? @updatedAt
+model user {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  type         user_type      @relation(fields: [user_type_id], references: [id])
+  user_type_id Int
+  firstname    String
+  lastname     String
+  phone        String?        @unique
+  is_active    Boolean        @default(true)
+  created_date DateTime       @default(now())
+  updated_date DateTime       @updatedAt
 }
 
-model UserType {
+model user_type {
   id   Int    @id @default(autoincrement())
   name String
-  User User[]
+  user user[]
 }
